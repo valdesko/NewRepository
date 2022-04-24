@@ -2,8 +2,11 @@
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
+import com.github.javafaker.Faker;
 import org.junit.jupiter.api.*;
 import org.openqa.selenium.WebDriver;
+
+
 
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.*;
@@ -11,42 +14,43 @@ import static com.codeborne.selenide.Condition.text;
 
 class frst {
 
+    Faker faker = new Faker();
+    String firstName = faker.name().firstName(),
+            lastName = faker.name().lastName(),
+            mail = faker.internet().emailAddress(),
+            currentAddress = faker.address().fullAddress();
+
+
+
     @BeforeAll
     static void setup(){
         Configuration.baseUrl = "https://demoqa.com";
         Configuration.browserSize = "1920x1080";
     }
 
-    @Test
-    void demoqaTextBox(){
-        String name = "Petr";
-        String mail = "petr@mail.com";
-        String address1 = "street1";
-        String address2 = "streestreet";
-
-        open("/text-box");
-        $x("//*[@id='userName']").setValue(name);
-        $("[id=userEmail]").setValue(mail);
-        $("[id=currentAddress]").setValue(address1);
-        $("[id=permanentAddress]").setValue(address2);
-        $("#submit").click();
-
-        $("[id=output]").shouldHave(text(name),text(mail));
-        $("[id=output] [id=currentAddress]").shouldHave(text(address1));
-        $("[id=output]").$("[id=permanentAddress]").shouldHave(text(address2));
-
-    }
+//    @Test
+//    void demoqaTextBox(){
+//        String address2 = "streestreet";
+//
+//        open("/text-box");
+//        $x("//*[@id='userName']").setValue(firstName);
+//        $("[id=userEmail]").setValue(mail);
+//        $("[id=currentAddress]").setValue(currentAddress);
+//        $("[id=permanentAddress]").setValue(address2);
+//        $("#submit").click();
+//
+//        $("[id=output]").shouldHave(text(name),text(mail));
+//        $("[id=output] [id=currentAddress]").shouldHave(text(address1));
+//        $("[id=output]").$("[id=permanentAddress]").shouldHave(text(address2));
+//
+//    }
 
     @Test
     void demoqaForm(){
-        String firstName = "Petr",
-                lastName = "Ivanov",
-                email = "pettrr@mail.ru",
-                phone = "88005553535",
+        String phone = "8800555353",
                 subject = "Chemisrty",
                 gender = "Male",
                 hobby = "Reading",
-                currentAddress = "somewhere here",
                 state = "Rajasthan",
                 city = "Jaipur",
                 img = "123.png";
@@ -56,7 +60,7 @@ class frst {
         open("/automation-practice-form");
         $("#firstName").setValue(firstName);
         $("#lastName").setValue(lastName);
-        $("#userEmail").setValue(email);
+        $("#userEmail").setValue(mail);
         $("#genterWrapper").$(byText(gender)).click();
         $("#hobbiesWrapper").$(byText(hobby)).click();
         $("#userNumber").setValue(phone);
@@ -77,7 +81,7 @@ class frst {
         $("#example-modal-sizes-title-lg").shouldHave(text("Thanks for submitting the form"));
         $(".table-responsive").shouldHave(
                 text(firstName + " " + lastName),
-                text(email),
+                text(mail),
                 text(gender),
                 text(phone),
                 text ("01 Murch,1995"),
@@ -91,12 +95,12 @@ class frst {
 
 
 
-    @Test
-    void kotiki(){
-        open("https://google.com/");
-        $("[name=q]").setValue("kotiki").pressEnter();
-
-    }
+//    @Test
+//    void kotiki(){
+//        open("https://google.com/");
+//        $("[name=q]").setValue("kotiki").pressEnter();
+//
+//    }
 
 
 }
