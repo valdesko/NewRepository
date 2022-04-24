@@ -3,7 +3,11 @@ package practice.tests;
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.SelenideElement;
+import com.codeborne.selenide.logevents.SelenideLog;
+import com.codeborne.selenide.logevents.SelenideLogger;
 import com.github.javafaker.Faker;
+import io.qameta.allure.*;
+import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -13,8 +17,10 @@ import practice.pages.RegFormPgObj;
 import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.*;
+import static io.qameta.allure.Allure.step;
 
 class firsttry {
+
 
     RegFormPgObj regFormPgObj = new RegFormPgObj();
     Faker faker = new Faker();
@@ -34,6 +40,8 @@ class firsttry {
     @DisplayName("Проверка формы TextBox")
     @Test
     void demoqaTextBox(){
+        SelenideLogger.addListener("allure", new AllureSelenide());
+
         String address2 = "streestreet";
 
         open("/text-box");
@@ -49,9 +57,17 @@ class firsttry {
 
     }
 
-    @DisplayName("Работа в формой регистрации студентов")
+
+
     @Test
+    @DisplayName("RegForm")
+    @Owner("me")
+    @Severity(SeverityLevel.CRITICAL)
+    @Feature("DemoQA")
+    @Story("Форма регистрации")
+    @Link(value="Test", url = "https://demoqa.com")
     void demoqaForm(){
+        SelenideLogger.addListener("allure", new AllureSelenide());
         String phone = "8800555353",
                 subject = "Chemisrty",
                 gender = "Male",
@@ -101,14 +117,23 @@ class firsttry {
     @ValueSource(strings = {"Selenide", "JUnit"})
     @ParameterizedTest(name = "Проверка поиска через яндекс слова {0}")
     void SrchTest(String tstData){
-        open("https://ya.ru/");
+        step("Открываем яндекс", () -> {
+            open("https://ya.ru/");
+        });
+        step("Вставляем текст в поле поиска", () -> {
+            $("#text").setValue(tstData);
+        });
+        step("Жмем Найти", ()->{
+            $("button[type='submit']").click();
+        });
+        step("Проверки", ()->{
+            $$(".serp-item")
+                    .find(Condition.text(tstData))
+                    .shouldBe(visible);
+        });
 
-        $("#text").setValue(tstData);
-        $("button[type='submit']").click();
 
-        $$(".serp-item")
-                .find(Condition.text(tstData))
-                .shouldBe(visible);
+
 
     }
 
